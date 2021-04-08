@@ -109,6 +109,9 @@
                     <li><a href="{{url('addcoursefees')}}"> Courses Fees </a></li>
                     <li><a href="{{url('addcoursemapping')}}"> Courses Mapping </a></li>
                     <li><a href="{{url('addadmissionprocess')}}"> College Addmission Process </a></li>
+                    <li><a href="{{url('addfacilities')}}"> Facilities</a></li>
+                    <li><a href="{{url('addcollegefacilities')}}"> College Facilities </a></li>
+                    <li><a href="{{url('addhostel')}}"> College Hostel </a></li>
                     
                   </ul>
                 </li>

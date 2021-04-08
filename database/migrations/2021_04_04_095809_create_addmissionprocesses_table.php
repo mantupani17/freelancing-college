@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCouseadmissionprocessTable extends Migration
+class CreateAddmissionprocessesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateCouseadmissionprocessTable extends Migration
      */
     public function up()
     {
-        Schema::create('couseadmissionprocess', function (Blueprint $table) {
+        Schema::create('addmissionprocesses', function (Blueprint $table) {
             $table->id();
             $table->string('college_id');
             $table->string('course_id');
@@ -22,7 +22,6 @@ class CreateCouseadmissionprocessTable extends Migration
             $table->text('admission_process_link');
             $table->text('admission_process_link_text');
             $table->string('own_admission_process');
-             
             $table->timestamps();
         });
     }
@@ -34,6 +33,6 @@ class CreateCouseadmissionprocessTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('couseadmissionprocess');
+        Schema::dropIfExists('addmissionprocesses');
     }
 }

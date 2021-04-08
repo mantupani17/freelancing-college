@@ -33,6 +33,10 @@ Route::get('/addcourses', [CollegeadminController::class, 'addCourse']);
 Route::get('/addcoursefees', [CollegeadminController::class, 'addCoursefees']);
 Route::get('/addcoursemapping', [CollegeadminController::class, 'addCourseMapping']);
 Route::get('/addadmissionprocess', [CollegeadminController::class, 'addAdmissionprocess']);
+Route::get('/addfacilities', [CollegeadminController::class, 'addFacilities']);
+Route::get('/addcollegefacilities', [CollegeadminController::class, 'addCollegeFacilities']);
+Route::get('/addhostel', [CollegeadminController::class, 'addHostel']);
+
 Route::get('/newcollege', [CollegeadminController::class, 'newCollege']);
 Route::get('/newcoursesfees', [CollegeadminController::class, 'newCoursesfees']);
 
@@ -53,6 +57,10 @@ Route::post('/savenewcourse', [CollegeadminController::class, 'saveCourses'])->n
 Route::post('/savenewcoursefes', [CollegeadminController::class, 'saveCoursefees'])->name('add-coursefees');
 Route::post('/savecoursemapping', [CollegeadminController::class, 'saveCourseMapping'])->name('add-coursemapping');
 Route::post('/saveadmissionprocess', [CollegeadminController::class, 'saveAdmissionprocess'])->name('add-admissionprocess');
+Route::post('/savefacilities', [CollegeadminController::class, 'saveFacilities'])->name('add-facilities');
+
+Route::post('/savecollegefacilities', [CollegeadminController::class, 'saveCollegeFacilities'])->name('add-collegefacilities');
+Route::post('/savehosteles', [CollegeadminController::class, 'saveHosteles'])->name('add-hostel');
 
 Route::get('/collegedetail/{collegeurl}/{tab_name?}', [CollegeadminController::class, 'detail']);
 

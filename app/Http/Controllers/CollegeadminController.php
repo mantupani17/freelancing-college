@@ -15,6 +15,9 @@ use App\Models\Course;
 use App\Models\Coursefees;
 use App\Models\Addmissionprocess;
 use App\Models\Coursemapping;
+use App\Models\Collegefacilities;
+use App\Models\Facilities;
+use App\Models\Hosteles;
 use App\Imports\ImportCollege;
 use App\Exports\ExportCollege;
 use Excel;
@@ -492,29 +495,120 @@ public function addCoursefees(Request $request)
 
    public function saveAdmissionprocess(Request $request)
        {
+       
 
-        $this->validate($request,[
-            'college_id' => 'required|max:255',
-            'course_id' => 'required|max:255',
-            'admission_process' => 'required',
-            'admission_process_detail' => 'required',
-            'admission_process_link' => 'required',
-            'admission_process_link_text' => 'required',
-            'own_admission_process' => 'required|max:255',
-           
-        ]);
 
         $admissionprocess= new Addmissionprocess;
         $admissionprocess->college_id = $request->college_id;
         $admissionprocess->course_id = $request->course_id;
-        $admissionprocess->admission_process = $request->admission_process;
-        $admissionprocess->admission_process_detail = $request->admission_process_detail;
-        $admissionprocess->admission_process_link = $request->admission_process_link;
-        $admissionprocess->admission_process_link_text = $request->admission_process_link_text;
         $admissionprocess->own_admission_process = $request->own_admission_process;
+        if($request->own_admission_process== "true"){
+            $admissionprocess->admission_process = $request->admission_process;
+            $admissionprocess->admission_process_detail = $request->admission_process_detail;
+                 
+          }else{
+            $admissionprocess->admission_process_link = $request->admission_process_link;
+            $admissionprocess->admission_process_link_text = $request->admission_process_link_text;
+            
+        }
+        
+        
+        
 
         $admissionprocess->save();
         return redirect('addadmissionprocess')->with('success','CourseMapping added successfully');
+        
+      }
+
+
+
+       public function addFacilities(Request $request)
+    {
+        
+        
+        return view('addFacilities');
+    }
+
+   public function saveFacilities(Request $request)
+       {
+
+        $this->validate($request,[
+            'facilitiesName' => 'required|max:255',
+            
+        ]);
+
+        $facilities = new Facilities;
+        $facilities->facilitiesName = $request->facilitiesName;
+        
+        $facilities->save();
+        return redirect('addfacilities')->with('success','Facilities added successfully');
+        
+      }
+       public function addCollegeFacilities(Request $request)
+    {
+        $collegeList = Colleges::orderBy('collegeName')->get();
+        $facilitiesList = Facilities::orderBy('facilitiesName')->get();
+        
+        return view('addCollegeFacilities',compact('collegeList','facilitiesList'));
+    }
+
+   public function saveCollegeFacilities(Request $request)
+       {
+
+        $this->validate($request,[
+            'college_id' => 'required|max:255',
+            'facilities_id' => 'required|max:255',
+            'college_faculty' => 'required|max:255',
+            'college_area' => 'required|max:255',
+            'facilities_detail' => 'required|max:255',
+            'college_established' => 'required|max:255',
+        ]);
+
+        $facilities = new Collegefacilities;
+        $facilities->college_id = $request->college_id;
+        $facilities->facilities_id = $request->facilities_id;
+        $facilities->college_faculty = $request->college_faculty;
+        $facilities->college_area = $request->college_area;
+        $facilities->facilities_detail = $request->facilities_detail;
+        $facilities->college_established = $request->college_established;
+
+
+        $facilities->save();
+        return redirect('addcollegefacilities')->with('success','collegefacilities added successfully');
+        
+      }
+
+public function addHostel(Request $request)
+    {
+        $collegeList = Colleges::orderBy('collegeName')->get();
+        $states = State::orderBy('state_name')->get();
+        return view('addHostel',compact('states','collegeList'));
+    }
+
+   public function saveHosteles(Request $request)
+       {
+
+        $this->validate($request,[
+            'college_id' => 'required|max:255',
+            'hostel_name' => 'required|max:255',
+            'hostel_facility' => 'required',
+            'state_id' => 'required|max:255',
+            'city' => 'required|max:255',
+            'hostel_type' => 'required|max:255',
+            'address_detail' => 'required',
+        ]);
+
+        $hostelfacilities = new Hosteles;
+        $hostelfacilities->college_id = $request->college_id;
+        $hostelfacilities->hostel_name = $request->hostel_name;
+        $hostelfacilities->hostel_facility = $request->hostel_facility;
+        $hostelfacilities->hostel_type = $request->hostel_type;
+        $hostelfacilities->state_id = $request->state_id;
+        $hostelfacilities->city = $request->city;
+        $hostelfacilities->address_detail = $request->address_detail;
+
+        $hostelfacilities->save();
+        return redirect('addhostel')->with('success','Hosteles added successfully');
         
       }
 
