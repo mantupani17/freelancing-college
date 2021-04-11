@@ -265,7 +265,7 @@ class CollegeadminController extends Controller
                 'admission_process'=>"Xyz", 
                 'admission_process_detail'=>"Need clear the JEE",
                 'admission_process_link' => "",
-                'own_admission_process' => true,
+                'own_admission_p ocess' => true,
                 'admission_process_link_text' => ''
             )
         );
