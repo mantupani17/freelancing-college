@@ -1713,8 +1713,22 @@
         <section class="clearfix paddingAdjustTop mt-3 mt-sm-0 tab-contents" id="hostel" style="display:none;">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-8 col-md-8 col-xs-12">
-                    Hostel
+                    <div class="col-lg-8 col-md-8 col-xs-12 mt-3">
+                        <div class="detailsInfoBox">
+                            <div class="row mt-2">
+                                <div class="col-lg-12 pl-0 pr-0"> 
+                            <!-- COURSES -->
+                            <!-- courses box new -->
+                                    <div class="col-sm-12">
+                                        <div class="row">
+                                            <div class="col" id="college-hostel-details">
+                                            
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1999,6 +2013,14 @@
                         data: data,
                         async: true
                     })
+                },
+                getHostels: function(data){
+                    return $.ajax({
+                        url: 'http://127.0.0.1:8000/api/hosteles',
+                        method: 'GET',
+                        data: data,
+                        async: true
+                    })
                 }
             }
 
@@ -2095,7 +2117,6 @@
                         var html = '';
                         for (var k in listData) {
                             var dt = listData[k]; 
-                            console.log(dt)
                             html += `
                                 <div>
                                     <b>${dt['courseName']}:</b> ${dt['admission_process_detail']}
@@ -2122,6 +2143,51 @@
                         }
                         table_view.append(table_html);
                     }
+                },
+                renderHostsels: function(data){
+                    var hostel_list = $('#college-hostel-details');
+                    hostel_list.html('');
+                    var count = 0;
+                    var hostel_htmls = '';
+                    for (var key in data) {
+                        var hostel_array = data[key];
+                        for (var index = 0; index < hostel_array.length; index++) {
+                            var hostel = hostel_array[index];
+                            if (count == 0) {
+                                hostel_htmls += `
+                                    <div class="card p-3">
+                                        <div class="card-title font-weight-bold text-dark mb-0" style="font-size:20px; ">
+                                            <i class="fa fa-male text-primary"></i> ${key}        
+                                            <span12 class="float-right text-center text-secondary py-3" style="font-size:12px;">
+                                                <i class=" fa fa-hotel"></i> NA/-
+                                            </span12>
+                                        </div>
+                                        <div class="mt-2 p-2">
+                                            <div class="col-9">${hostel.hostel_facility}</div>
+                                        </div>
+                                    </div>
+                                `;
+                            }else {
+                                hostel_htmls += `
+                                    <div class="row mt-4">
+                                        <div class="col">
+                                            <div class="card p-3">
+                                                <div class="card-title font-weight-bold text-dark mb-0" style="font-size:20px; "><i class="fa fa-female text-primary"></i> ${key}    
+                                                    <span12 class="float-right text-center text-secondary py-3" style="font-size:12px;"><i class=" fa fa-hotel"></i> NA/-
+                                                    </span12>
+                                                </div>
+                                                <div class=" mt-2 p-2">
+                                                    <div class="col-9">${hostel.hostel_facility}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            }
+                            count ++;
+                        }
+                    }
+                    hostel_list.append(hostel_htmls);
                 }
             }
             
@@ -2132,7 +2198,7 @@
                 // calling the service for getting the course fees detail
                 var course_fees = services.getCollegeFees({college_id:college_id});
                 course_fees.done(function(data){
-                    if(data.status){
+                    if(data.status && data.data.length){
                         var grouped_data = helpers.groupBy(data.data, 'courseName');
                         helpers.renderCourseFees(grouped_data);
                     }
@@ -2141,12 +2207,20 @@
                 // calling admission process api
                 var admission_process = services.getAdmissionProcess({college_id:college_id});
                 admission_process.done(function(data){
-                    if(data.status){
+                    if(data.status && data.data.length){
                         var grouped_data = helpers.groupBy(data.data, 'own_admission_process');
                         helpers.renderAdmissionProcess(grouped_data);
                     }
                 });
 
+                // calling hostels process api
+                var hosteles_details = services.getHostels({college_id:college_id});
+                hosteles_details.done(function(data){
+                    if(data.status && data.data.length){
+                        var grouped_data = helpers.groupBy(data.data, 'hostel_type');
+                        helpers.renderHostsels(grouped_data);
+                    }
+                });
                 
                     
                 var tab_to_show  = 'about-us';
