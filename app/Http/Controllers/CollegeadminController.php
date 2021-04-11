@@ -259,22 +259,9 @@ class CollegeadminController extends Controller
         $city = City::select('*')
                 ->where('id', $college['city_id'])
                 ->first();
-        $admission_process = array(
-            array(
-                'course_name' => "MCA",
-                'admission_process'=>"Xyz", 
-                'admission_process_detail'=>"Need clear the JEE",
-                'admission_process_link' => "",
-                'own_admission_p ocess' => true,
-                'admission_process_link_text' => ''
-            )
-        );
-        error_log($tab_name);
         $data['college'] = $college;
         $data['college']['state_name'] = $state['state_name'];
         $data['college']['city_name'] = $city['city_name'];
-        $data['college']['admission_process'] = $admission_process;
-        $data['admission_process_type'] = "own";
        // $preg_replace['college,pattern,replacement'] = $college;
         return view('collegedetail', $data);
     }

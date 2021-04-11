@@ -88,6 +88,23 @@
         body::-webkit-scrollbar-thumb {
             background-color: #2196f3 !important;
         }
+        #admission-process-table-view{
+            display:none;
+        }
+        #admission-process-list-view{
+            display:none;
+        }
+        #admission-process-table-view li{
+            list-style: none;
+        }
+
+        /* #admission-process-table-view>tbody>tr>td, 
+        #admission-process-table-view>tbody>tr>th, 
+        #admission-process-table-view>tfoot>tr>td, 
+        #admission-process-table-view>tfoot>tr>th, #admission-process-table-view>thead>tr>td, 
+        #admission-process-table-view>thead>tr>th{
+            
+        } */
     </style>
 
 
@@ -1613,37 +1630,23 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 col-md-8 col-xs-12">
-                        @if($college && $college->admission_process)
-                            @if($college->admission_process_type == "list")
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <td></td>
+                        <!-- List view -->
+                        <div id="admission-process-list-view">
+                        </div>
+                        <!-- Table View -->
+                        <div class="mt-3">
+                            <table id="admission-process-table-view" style="width: 100%;">
+                                <thead class="table table-bordered table-responsive-md">
+                                    <tr class="bg-light">
+                                        <th class="p-3">Course</th>
+                                        <th class="p-3">Admission Process</th>
                                     </tr>
                                 </thead>
-                                @foreach($college->admission_process as $process)
-                                    @foreach($times as $time)
-                                        <tr>
-                                            <td>{{ getImaginedChairNumber() }}</td>
-                                            <td>{{ $time->availble_times }}</td>
-                                            @if($time->availble_times == $booking->booking_time)
-                                                {{-- There is already booking for that dictionary time --}}
-                                                <td>not available</td>
-                                            @else
-                                                <td>available</td>
-                                            @endif
-                                        </tr>
-                                    @endforeach
-                                @endforeach
+                                <tbody class="admission-process-body">
+                                </tbody>
                             </table>
-                            @else
-                                @foreach($college->admission_process as $processes)
-                                    <b>{{$processes['course_name']}}:</b> {{$processes['admission_process_detail']}}
-                                @endforeach
-                            @endif
-                        @else
-                        <div>No Data Found</div>
-                        @endif
+                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -1988,6 +1991,14 @@
                         data: data,
                         async: true
                     })
+                },
+                getAdmissionProcess: function(data){
+                    return $.ajax({
+                        url: 'http://127.0.0.1:8000/api/admissionprocess',
+                        method: 'GET',
+                        data: data,
+                        async: true
+                    })
                 }
             }
 
@@ -2069,6 +2080,48 @@
                         }
                     }
                     return data;
+                },
+                renderAdmissionProcess: function(data){
+                    var table_view = $('.admission-process-body');
+                    var list_view = $('#admission-process-list-view');
+                    table_view.html('');
+                    list_view.html('');
+
+                    var listData = true in data ? data[true] : [];
+                    var tableData = false in data ? data[false] : [];
+
+                    if(listData.length > 0){
+                        list_view.show();   
+                        var html = '';
+                        for (var k in listData) {
+                            var dt = listData[k]; 
+                            console.log(dt)
+                            html += `
+                                <div>
+                                    <b>${dt['courseName']}:</b> ${dt['admission_process_detail']}
+                                </div>
+                            `;
+                        }
+                        list_view.append(html);
+                    }
+
+                    if(tableData.length > 0){
+                        $('#admission-process-table-view').show();
+                        var table_html = '';
+                        for (var k1 in tableData) {
+                            var dt1 = tableData[k1];  
+                            table_html += `<tr>
+                                    <td>${dt1['courseName']}</td>
+                                    <td>
+                                        <ul>
+                                            <li><a href="${dt1['admission_process_link']}">${dt1['admission_process_link_text']}</a></li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            `;                              
+                        }
+                        table_view.append(table_html);
+                    }
                 }
             }
             
@@ -2084,17 +2137,29 @@
                         helpers.renderCourseFees(grouped_data);
                     }
                 });
+
+                // calling admission process api
+                var admission_process = services.getAdmissionProcess({college_id:college_id});
+                admission_process.done(function(data){
+                    if(data.status){
+                        var grouped_data = helpers.groupBy(data.data, 'own_admission_process');
+                        helpers.renderAdmissionProcess(grouped_data);
+                    }
+                });
+
                 
                     
                 var tab_to_show  = 'about-us';
                 if(location.href.split('/').length > 4 && location.href.split('/')[5]){
                     tab_to_show  = location.href.split('/')[5];
+                }else{
+                    window.localStorage.setItem('local_url', location.href);
                 }
-
+                
                 $('#'+tab_to_show).show();
                 
                 var local_url = window.localStorage.getItem('local_url');
-                if(local_url != location.href){
+                if(!local_url){
                     window.localStorage.setItem('local_url', location.href);
                     local_url = window.localStorage.getItem('local_url');
                 }
