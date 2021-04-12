@@ -102,6 +102,20 @@
                     $('.other-admission-process').show();
                }
            })
+
+           $('#facilities_id').on('change', function(e){
+               var facility = $(this).val();
+               if(facility){
+                   if(facility == 'Area'){
+                        
+                   }else if(facility == 'Faculty'){
+
+                   } else if(facility == 'Established'){
+
+                   }
+                   $('#facility_hidden').val(facility);
+               }
+           })
         });
     </script>
 </body>

@@ -534,8 +534,23 @@ public function addCoursefees(Request $request)
        public function addCollegeFacilities(Request $request)
     {
         $collegeList = Colleges::orderBy('collegeName')->get();
-        $facilitiesList = Facilities::orderBy('facilitiesName')->get();
-        
+        $facilitiesarray = array(
+            ['facilitiesName' => 'Comp Labs'],
+            ['facilitiesName' => 'Sports'],
+            ['facilitiesName' => 'Cafeteria'],
+            ['facilitiesName' => 'Library'],
+            ['facilitiesName' => 'Auditorium'],
+            ['facilitiesName' => 'Hostel'],
+            ['facilitiesName' => 'Gym'],
+            ['facilitiesName' => 'Laboratory'],
+            ['facilitiesName' => 'Medical'],
+            ['facilitiesName' => 'Classrooms'],
+            ['facilitiesName' => 'Security'],
+            ['facilitiesName' => 'Area'],
+            ['facilitiesName' => 'Faculty'],
+            ['facilitiesName' => 'Established']
+        );
+        $facilitiesList = json_decode(json_encode($facilitiesarray), FALSE);
         return view('addCollegeFacilities',compact('collegeList','facilitiesList'));
     }
 
@@ -544,20 +559,14 @@ public function addCoursefees(Request $request)
 
         $this->validate($request,[
             'college_id' => 'required|max:255',
-            'facilities_id' => 'required|max:255',
-            'college_faculty' => 'required|max:255',
-            'college_area' => 'required|max:255',
-            'facilities_detail' => 'required|max:255',
-            'college_established' => 'required|max:255',
+            'facility_name' => 'required|max:255',
+            'facility_value' => 'required|max:255'
         ]);
 
         $facilities = new Collegefacilities;
         $facilities->college_id = $request->college_id;
-        $facilities->facilities_id = $request->facilities_id;
-        $facilities->college_faculty = $request->college_faculty;
-        $facilities->college_area = $request->college_area;
-        $facilities->facilities_detail = $request->facilities_detail;
-        $facilities->college_established = $request->college_established;
+        $facilities->facility_name = $request->facility_name;
+        $facilities->facility_value = $request->facility_value;
 
 
         $facilities->save();

@@ -1690,19 +1690,10 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 col-md-8 col-xs-12">
-                    <div class="detailsInfoBox mb-2">                                                       
-                        <li class="list-inline-item" style="font-size:15px"><i class="fa fa-desktop text-primary mr-1 mt-2" aria-hidden="true"></i> Comp Labs</li>
-                        <li class="list-inline-item" style="font-size:15px"><i class="fa fa-futbol text-primary mr-1 mt-2" aria-hidden="true"></i> Sports</li>
-                        <li class="list-inline-item" style="font-size:15px"><i class="fa fa-utensils text-primary mr-1 mt-2" aria-hidden="true"></i> Cafeteria</li>
-                        <li class="list-inline-item" style="font-size:15px"><i class="fa fa-book-reader text-primary mr-1 mt-2" aria-hidden="true"></i> Library</li>
-                        <li class="list-inline-item" style="font-size:15px"><i class="fab fa-audible text-primary mr-1 mt-2" aria-hidden="true"></i> Auditorium</li>
-                        <li class="list-inline-item" style="font-size:15px"><i class="fa fa-h-square text-primary mr-1 mt-2" aria-hidden="true"></i> Hostel</li>
-                        <li class="list-inline-item" style="font-size:15px"><i class="fa fa-dumbbell text-primary mr-1 mt-2" aria-hidden="true"></i> Gym</li>
-                        <li class="list-inline-item" style="font-size:15px"><i class="fa fa-flask text-primary mr-1 mt-2" aria-hidden="true"></i> Laboratory</li>
-                        <li class="list-inline-item" style="font-size:15px"><i class="fa fa-hospital text-primary mr-1 mt-2" aria-hidden="true"></i> Medical</li>
-                        <li class="list-inline-item" style="font-size:15px"><i class="fa fa-chalkboard-teacher text-primary mr-1 mt-2" aria-hidden="true"></i> Classrooms</li>
-                        <li class="list-inline-item" style="font-size:15px"><i class="fa fa-shield-alt text-primary mr-1 mt-2" aria-hidden="true"></i> Security</li>
+                        <div class="detailsInfoBox mb-2 detail-facilities">
                         </div>
+                        <h4 class="about_headings others-heading" style="font-size: 1.2rem; display:none;">Infrastructure</h4>
+                        <div class="row mt-2 other-facilities" style="display:none;"></div>
                     </div>
                 </div>
             </div>
@@ -1722,7 +1713,7 @@
                                     <div class="col-sm-12">
                                         <div class="row">
                                             <div class="col" id="college-hostel-details">
-                                            
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -2021,6 +2012,14 @@
                         data: data,
                         async: true
                     })
+                },
+                getFacilities: function(data){
+                    return $.ajax({
+                        url: 'http://127.0.0.1:8000/api/facilities',
+                        method: 'GET',
+                        data: data,
+                        async: true
+                    })
                 }
             }
 
@@ -2188,6 +2187,73 @@
                         }
                     }
                     hostel_list.append(hostel_htmls);
+                },
+                renderFacilities: function(data){
+                    var facilities = helpers.getExistingFacilities();
+                    var facility_html = '';
+                    var others = [
+                        'Area',
+                        'Faculty',
+                        'Established'
+                    ];
+                    $('.detail-facilities').html('');
+                    for (var key in facilities) {
+                        if(data[key]){
+                            facility_html += `
+                            <li class="list-inline-item" style="font-size:15px">
+                                <i class="fa ${facilities[key]}"  aria-hidden="true"></i>
+                                ${key}
+                            </li>
+                            `
+                        } else if ( others.indexOf(key) < 0 ){
+                            facility_html += `
+                            <li class="list-inline-item greyout" style="font-size:15px">
+                                <i class="fa fa-check-circle"  aria-hidden="true"></i>
+                                ${key}
+                            </li>
+                            `;
+                        }
+                    }
+
+                    var others_html = ``;
+                    $('.other-facilities').html('');
+                    for (var iterator of others) {
+                        if(data[iterator]){
+                            var el = data[iterator][0];
+                            others_html += `
+                                <div class="col-sm-4 col-6 text-center mt-2">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h2 class="text-danger mb-0">${el.facility_value}</h2>
+                                            <p>${ el.facility_name == 'Area' ? 'Area in Acre' : el.facility_name }</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                    $('.detail-facilities').append(facility_html);
+                    $('.other-facilities').append(others_html);
+                    if(others_html){
+                        $('.other-facilities').show();
+                        $('.others-heading').show();
+                    }
+                },
+                getExistingFacilities: function(){
+                    var obj = {
+                        'Comp Labs' : 'fa fa-desktop text-primary mr-1 mt-2',
+                        'Sports' : 'fa fa-futbol text-primary mr-1 mt-2',
+                        'Cafeteria' : 'far fa-utensils text-primary mr-1 mt-2',
+                        'Library' : 'fa fa-book-reader text-primary mr-1 mt-2',
+                        'Auditorium' : 'fa fa-book-audible text-primary mr-1 mt-2',
+                        'Hostel' : 'fa fa-h-square text-primary mr-1 mt-2',
+                        'Gym' : 'fa fa-dumbbell text-primary mr-1 mt-2',
+                        'Laboratory': 'fa fa-flask text-primary mr-1 mt-2',
+                        'Medical':'fa fa-hospital text-primary mr-1 mt-2',
+                        'Classrooms':'fa fa-chalkboard-teacher text-primary mr-1 mt-2',
+                        'Security': 'fa fa-shield-alt text-primary mr-1 mt-2',
+                    }
+                    return obj;
                 }
             }
             
@@ -2219,6 +2285,14 @@
                     if(data.status && data.data.length){
                         var grouped_data = helpers.groupBy(data.data, 'hostel_type');
                         helpers.renderHostsels(grouped_data);
+                    }
+                });
+
+                var college_facilities = services.getFacilities({college_id:college_id});
+                college_facilities.done(function(data){
+                    if(data.status && data.data.length){
+                        var grouped_data = helpers.groupBy(data.data, 'facility_name');
+                        helpers.renderFacilities(grouped_data);
                     }
                 });
                 

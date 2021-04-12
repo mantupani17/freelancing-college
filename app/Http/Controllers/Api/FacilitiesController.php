@@ -20,8 +20,7 @@ class FacilitiesController extends Controller
             }
             $diets = DB::table('collegefacilities')
                 ->where($where)
-                ->select('collegefacilities.facilities_id', 'collegefacilities.college_area', 'collegefacilities.college_faculty', 'collegefacilities.facilities_detail', 'collegefacilities.college_established', 'facilities.facilitiesName', 'colleges.collegeName')
-                ->join('facilities', 'facilities.id', '=', 'collegefacilities.facilities_id')
+                ->select('collegefacilities.facility_name', 'collegefacilities.facility_value')
                 ->join('colleges', 'colleges.id', '=', 'collegefacilities.college_id')
                 ->get();
             

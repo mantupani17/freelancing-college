@@ -78,9 +78,9 @@
 								<div class="form-group col-md-6 mb-6">
 									<label for="listingTitle">Facilities List</label>
 									<select name="facilities_id" id="facilities_id" class="form-control @error('facilities_id') is-invalid @enderror"  >
-										<option value="">Select Facilities</option>
+										<option value="">Select Facilities</option>										
 										@foreach($facilitiesList as $facilities)
-											<option value="{{$facilities->id}}" {{old('facilities_id') != null && old('facilities_id') == $facilities->id ? 'selected' : '' }}>{{$facilities->facilitiesName}}</option>
+											<option value="{{$facilities->facilitiesName}}" {{old('facilitiesName') != null && old('facilitiesName') == $facilities->facilitiesName ? 'selected' : '' }}>{{$facilities->facilitiesName}}</option>
 										@endforeach
 									</select>
 									@error('facilities_id')
@@ -89,7 +89,17 @@
 									  	</div>
 									@enderror
 								</div>
+								<input type="hidden" id="facility_hidden" name="facility_name" value="" />
 								<div class="form-group col-md-6 mb-6">
+									<label for="facility_value">Facility Detail</label>
+									<input type="text" name="facility_value" id="facility_value" value="{{old('facility_value')}}" class="form-control @error('facility_value') is-invalid @enderror" >
+									@error('college_established')
+										<div class="invalid-feedback">
+											{{$message}}
+									  	</div>
+									@enderror
+								</div>
+								<!-- <div class="form-group col-md-6 mb-6">
 									<label for="listingTitle">College Established</label>
 									<input type="text" name="college_established" value="{{old('college_established')}}" class="form-control @error('college_established') is-invalid @enderror" >
 									@error('college_established')
@@ -97,9 +107,9 @@
 											{{$message}}
 									  	</div>
 									@enderror
-								</div>
+								</div> -->
                             
-								<div class="form-group col-md-6 mb-6 own-admission-process">
+								<!-- <div class="form-group col-md-6 mb-6 own-admission-process">
 									<label for="discribeTheListing">Facilities Detail</label>
 									<textarea class="form-control @error('facilities_detail') is-invalid @enderror" name="facilities_detail" rows="6"  >
 										{{old('facilities_detail')}}
@@ -109,8 +119,8 @@
 											{{$message}}
 										</div>
 									@enderror
-								</div>
-								<div class="form-group col-md-6 mb-6">
+								</div> -->
+								<!-- <div class="form-group col-md-6 mb-6">
 									<label for="listingTitle">College Area</label>
 									<input type="text" name="college_area" value="{{old('college_area')}}" class="form-control @error('college_area') is-invalid @enderror" >
 									@error('college_area')
@@ -127,7 +137,7 @@
 											{{$message}}
 									  	</div>
 									@enderror
-								</div>
+								</div> -->
 							</div>
 							<div class="form-group row mb-0">
 								<div class="col-md-6 offset-md-4">
